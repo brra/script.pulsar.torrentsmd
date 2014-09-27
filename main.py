@@ -1,9 +1,29 @@
+import os
 import sys
 import json
 import base64
 import re
 import urllib
 import urllib2
+import zelka
+import time
+
+try:
+  import xbmcaddon
+  run_from_xbmc = True
+except ImportError:
+  os.environ['no_proxy'] = '127.0.0.1,localhost'
+  run_from_xbmc = False
+  pass
+
+if True == run_from_xbmc:
+  __addon_id__= 'script.pulsar.torrentmd'
+  __Addon = xbmcaddon.Addon(__addon_id__)
+  torrentmd.logindata['username'] = __Addon.getSetting('usr')
+  torrentmd.logindata['password'] = __Addon.getSetting('pass')
+else:
+  torrentmd.logindata['username'] = os.environ.get('_LOGIN').split(':')[0]
+  torrentmd.logindata['password'] = os.environ.get('ZELKA_LOGIN').split(':')[1]
 
 PAYLOAD = json.loads(base64.b64decode(sys.argv[1]))
 
