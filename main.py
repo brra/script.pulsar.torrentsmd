@@ -5,7 +5,7 @@ import base64
 import re
 import urllib
 import urllib2
-import zelka
+import login
 import time
 
 try:
@@ -22,28 +22,39 @@ if True == run_from_xbmc:
   torrentmd.logindata['username'] = __Addon.getSetting('usr')
   torrentmd.logindata['password'] = __Addon.getSetting('pass')
 else:
-  torrentmd.logindata['username'] = os.environ.get('_LOGIN').split(':')[0]
-  torrentmd.logindata['password'] = os.environ.get('ZELKA_LOGIN').split(':')[1]
-
-PAYLOAD = json.loads(base64.b64decode(sys.argv[1]))
+  torrentmd.logindata['username'] = os.environ.get('MDTORRENT_LOGIN').split(':')[0]
+  torrentmd.logindata['password'] = os.environ.get('MDTORRENT_LOGIN').split(':')[1]
 
 def search(query):
-    response = urllib2.urlopen("http://www.torrentsmd.com/search.php?search_str=%s" % urllib.quote_plus(query))
-    data = response.read()
-    if response.headers.get("Content-Encoding", "") == "gzip":
-        import zlib
-        data = zlib.decompressobj(16 + zlib.MAX_WBITS).decompress(data)
-    return [{"uri": magnet} for magnet in re.findall(r'magnet:\?[^\'"\s<>\[\]]+', data)]
-
+    b = time.time()
+    ret = []
+    if have_login == True:
+      torrentmd.fnd['search'] = query
+      torrentmd.movie_get(torrentmd.get_data())
+      # return [{"uri": magnet} for magnet in re.findall(r'magnet:\?[^\'"\s<>\[\]]+', data)]
+      for l in torrentmd.found_data_list:
+        if int(l['id']) in torrentmd.movie_id:
+          ret.append({"uri": l['link']})
+    print 'Torrentmd time: ' + str((time.time() - b))
+    return ret
 
 def search_episode(imdb_id, tvdb_id, name, season, episode):
     return search("%s S%02dE%02d" % (name, season, episode))
 
-
 def search_movie(imdb_id, name, year):
-    return search(imdb_id)
+    return search("%s %s" % (name, year))
+
+have_login = torrentmd.do_login()
+
+PAYLOAD = json.loads(base64.b64decode(sys.argv[1]))
 
 urllib2.urlopen(
     PAYLOAD["callback_url"],
     data=json.dumps(globals()[PAYLOAD["method"]](*PAYLOAD["args"]))
 )
+
+if have_login == True:
+  torrentmd.do_logout()
+
+torrentmd.s.close()
+print torrentmd.found_data_list
