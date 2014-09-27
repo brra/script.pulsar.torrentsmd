@@ -54,28 +54,28 @@ def movie_get(data):
       })
 
 def do_login():
-  r = s.post('http://zelka.org/takelogin.php', data=logindata, headers = user_agent)
+  r = s.post('http://www.torrentsmd.com/login.php', data=logindata, headers = user_agent)
   if re.search(logindata['username'], r.text, re.IGNORECASE):
     #have a login
     return True
 
 def do_logout():
-  r = s.post('http://zelka.org/takelogin.php', data=logindata, headers = user_agent)
+  r = s.post('http://www.torrentsmd.com/logout.php', data=logindata, headers = user_agent)
 
 def get_data():
   text = ''
-  r = s.get('http://zelka.org/browse.php', params=fnd, headers = user_agent)
+  r = s.get('http://www.torrentsmd.com/browse.php', params=fnd, headers = user_agent)
   savetofile(r.text.encode('windows-1251'), 'tmp1.1.html')
   text = r.text.encode('windows-1251')
   #r = s.get('http://zelka.org/browse.php?cat=31', headers = user_agent)
   #savetofile(r.text.encode('windows-1251'), 'tmp1.2.html')
-  r = s.get('http://zelka.org/logout.php', headers = user_agent)
+  r = s.get('http://www.torrentsmd.com/logout.php', headers = user_agent)
   return text
 
 if __name__ == "__main__":
-  if True == os.environ.has_key('ZELKA_LOGIN'):
-    logindata['username'] = os.environ.get('ZELKA_LOGIN').split(':')[0]
-    logindata['password'] = os.environ.get('ZELKA_LOGIN').split(':')[1]
+  if True == os.environ.has_key('MDTORRENT_LOGIN'):
+    logindata['username'] = os.environ.get('MDTORRENT_LOGIN').split(':')[0]
+    logindata['password'] = os.environ.get('MDTORRENT_LOGIN').split(':')[1]
   cnt = len(sys.argv)
   have_login = False
   if cnt == 2:
