@@ -12,6 +12,10 @@ __proxy__ = __addon__.getSetting("url_proxy")
 __user__ = __addon__.getSetting("user")
 __password__ = __addon__.getSetting("password")
 
+opener = urllib2.build_opener()
+opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+opener.open('__proxy__')
+
 PAYLOAD = json.loads(base64.b64decode(sys.argv[1]))
 
 
