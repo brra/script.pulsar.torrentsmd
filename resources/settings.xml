@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
+    <setting label="URL/Proxy" id="url_proxy" type="text" default="http://www.torrentsmd.com/" />
   <category label="User info">
-    <setting label="User name" id="usr" type="text" default="" />
-    <setting label="Password" id="pass" type="text" default="" option="hidden" />
+    <setting label="User name" id="user" type="text" default="" />
+    <setting label="Password" id="password" type="text" default="" option="hidden" />
   </category>
 </settings>
