@@ -4,8 +4,16 @@ import base64
 import re
 import urllib
 import urllib2
+import xbmcaddon
+import xbmcplugin
+import xbmc
+__addon__ = xbmcaddon.Addon(str(sys.argv[0]))
+__proxy__ = __addon__.getSetting("url_proxy")
+__user__ = __addon__.getSetting("user")
+__password__ = __addon__.getSetting("password")
 
 PAYLOAD = json.loads(base64.b64decode(sys.argv[1]))
+
 
 def search(query):
     response = urllib2.urlopen("http://www.torrentsmd.com/search.php?search_str=%s" % urllib.quote_plus(query))
